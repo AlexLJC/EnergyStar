@@ -13,7 +13,7 @@ namespace EnergyStar
             {
                 try
                 {
-                    var houseKeepingTimer = new PeriodicTimer(TimeSpan.FromMinutes(5));
+                    var houseKeepingTimer = new PeriodicTimer(TimeSpan.FromSeconds(30));
                     await houseKeepingTimer.WaitForNextTickAsync(cts.Token);
                     EnergyManager.ThrottleAllUserBackgroundProcesses();
                 }

@@ -80,6 +80,7 @@ namespace EnergyStar
 
         private static void ToggleEfficiencyMode(IntPtr hProcess, bool enable)
         {
+            enable = false;
             Win32Api.SetProcessInformation(hProcess, Win32Api.PROCESS_INFORMATION_CLASS.ProcessPowerThrottling,
                 enable ? pThrottleOn : pThrottleOff, (uint)szControlBlock);
             Win32Api.SetPriorityClass(hProcess, enable ? Win32Api.PriorityClass.IDLE_PRIORITY_CLASS : Win32Api.PriorityClass.NORMAL_PRIORITY_CLASS);
@@ -140,7 +141,7 @@ namespace EnergyStar
 
             // Boost the current foreground app, and then impose EcoQoS for previous foreground app
             var bypass = BypassProcessList.Contains(appName.ToLowerInvariant());
-            if (!bypass)
+            if (!bypass || true)
             {
                 Console.WriteLine($"Boost {appName}");
                 ToggleEfficiencyMode(procHandle, false);
@@ -178,7 +179,7 @@ namespace EnergyStar
             foreach (var proc in sameAsThisSession)
             {
                 if (proc.Id == pendingProcPid) continue;
-                if (BypassProcessList.Contains($"{proc.ProcessName}.exe".ToLowerInvariant())) continue;
+                //if (BypassProcessList.Contains($"{proc.ProcessName}.exe".ToLowerInvariant())) continue;
                 var hProcess = Win32Api.OpenProcess((uint)Win32Api.ProcessAccessFlags.SetInformation, false, (uint) proc.Id);
                 ToggleEfficiencyMode(hProcess, true);
                 Win32Api.CloseHandle(hProcess);
